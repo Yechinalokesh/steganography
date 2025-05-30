@@ -1,4 +1,4 @@
-✨ **Steganography Explained: Hiding Secrets in Plain Sight..**
+# ✨ Steganography Explained: Hiding Secrets in Plain Sight..
 
 📺 **See Stego in Action (Animated Comic!)** 👉 [**Watch the Story**](https://your-link.com)
 
@@ -6,7 +6,7 @@ Welcome! 👋 This notebook explains **steganography** – how we hide secret in
 
 ---
 
-🤔 **Ever Wondered?**
+## 🤔 Ever Wondered?
 
 - How people hide secrets *inside images or music*?
 - How spy messages go unnoticed?
@@ -16,7 +16,7 @@ Welcome! 👋 This notebook explains **steganography** – how we hide secret in
 
 ---
 
-📘 **What's This Repo For?**
+## 📘 What's This Repo For?
 
 This repo uses a **fun, animated comic** (linked above!) to explain **steganography**.
 
@@ -27,7 +27,7 @@ Great for:
 
 ---
 
-🛡️ **Why Steganography Matters**
+## 🛡️ Why Steganography Matters
 
 ✅ Hides secrets without raising suspicion  
 ✅ Protects intellectual property through watermarking  
