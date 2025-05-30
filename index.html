@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Hidden Heartbeat - A Stego-Story ❤️🌅</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Creepster&display=swap');
+
+  :root {
+    --bg-main: linear-gradient(145deg, #2c3e50, #465871); /* Night sky gradient */
+    --text-light: #f0f0f0;
+    --text-dark: #333;
+    --accent-red: #e74c3c; /* For hearts and sender */
+    --accent-blue: #3498db; /* For receiver */
+    --accent-darth: #6c3483; /* Dark purple for Darth */
+    --panel-bg: rgba(255, 255, 255, 0.1);
+    --image-border: #f39c12; /* Sunset orange */
+    --sparkle-color: gold;
+  }
+
+  body {
+    background: var(--bg-main);
+    color: var(--text-light);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal scroll from animations */
+  }
+
+  .container {
+    background-color: var(--panel-bg);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+  }
+
+  h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2.5em;
+    color: var(--text-light);
+    text-shadow: 0 0 10px var(--accent-red);
+    margin-bottom: 20px;
+  }
+
+  .scene {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 25px;
+    min-height: 180px; /* For characters */
+  }
+
+  .character {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.5; /* Dimmed by default */
+    transition: opacity 0.5s ease, transform 0.3s ease;
+  }
+  .character.active {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  .character-emoji {
+    font-size: 5em; /* Large emojis */
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 8px currentColor); /* Glow effect */
+  }
+  .character-name {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  #senderName { color: var(--accent-red); }
+  #receiverName { color: var(--accent-blue); }
+  #interceptorName { color: var(--accent-darth); font-family: 'Creepster', cursive; font-size:1.4em; }
+
+
+  .image-display-area {
+    margin: 20px auto;
+    width: 250px;
+    height: 180px;
+    background-color: #333; /* Placeholder color */
+    border: 4px solid var(--image-border);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3em;
+    position: relative;
+    overflow: hidden; /* For shimmer/scan animations */
+    box-shadow: 0 0 20px var(--image-border);
+  }
+  #coverImageEmoji { transition: transform 0.3s ease; }
+  #coverImageEmoji.processed { transform: scale(1.05); /* Subtle change */ }
+
+  .scan-animation {
+    position: absolute;
+    top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(108, 52, 131,0.4), transparent); /* Darth color scan */
+    animation: scan 2s linear infinite;
+    display: none; /* Hidden by default */
+  }
+  @keyframes scan {
+    0% { left: -50%; }
+    100% { left: 100%; }
+  }
+  
+  /* For Hiding/Revealing Visualization */
+  .flying-char, .image-sparkle {
+    position: absolute;
+    font-size: 1.5em; /* Size of flying char / sparkle */
+    font-weight: bold;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .flying-char { color: var(--accent-red); }
+  .image-sparkle { color: var(--sparkle-color); }
+
+
+  .message-area {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--accent-red);
+    margin: 15px 0;
+    min-height: 50px; /* Increased height for flying chars */
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    position: relative; /* For positioning flying characters */
+  }
+  #originalMessageContainer, #revealedMessageContainer {
+    display: flex; /* For character alignment */
+    justify-content: center;
+    align-items: center;
+  }
+  .revealed-char { /* For individual revealed characters */
+    opacity: 0;
+    transform: translateY(20px);
+    display: inline-block; /* Allows transform */
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .revealed-char.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .explanation-panel {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    line-height: 1.6;
+    min-height: 80px;
+  }
+  .explanation-panel strong { color: var(--image-border); }
+
+  #actionButton {
+    padding: 12px 30px;
+    background-color: var(--image-border);
+    color: var(--text-dark);
+    border: none;
+    border-radius: 25px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+  #actionButton:hover {
+    background-color: #ffb83b;
+    transform: translateY(-2px);
+  }
+  #actionButton:disabled {
+    background-color: #777;
+    color: #bbb;
+    cursor: not-allowed;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>The Hidden Heartbeat ❤️🌅</h1>
+
+  <div class="scene">
+    <div class="character" id="sender">
+      <span class="character-emoji" id="senderEmoji">😊</span>
+      <div class="character-name" id="senderName">You (Sender)</div>
+    </div>
+    <div class="character" id="interceptor">
+      <span class="character-emoji" id="interceptorEmoji">😈</span>
+      <div class="character-name" id="interceptorName">Darth Watcher</div>
+    </div>
+    <div class="character" id="receiver">
+      <span class="character-emoji" id="receiverEmoji">😉</span>
+      <div class="character-name" id="receiverName">Your Ex-Friend</div>
+    </div>
+  </div>
+
+  <div class="image-display-area" id="imageDisplayArea">
+    <span id="coverImageEmoji">🌅</span>
+    <div class="scan-animation" id="scanAnimation"></div>
+    <!-- Sparkles will be added here by JS -->
+  </div>
+  
+  <div class="message-area">
+    <div id="originalMessageContainer">Secret Message: <span>I MISS U ❤️</span></div>
+    <div id="revealedMessageContainer" style="display: none;">Found: </div>
+  </div>
+
+  <div class="explanation-panel" id="explanationPanel">
+    Let's tell a story about hiding a secret message in a picture! Click "Next Scene".
+  </div>
+
+  <button id="actionButton">Next Scene</button>
+</div>
+
+<script>
+  const senderChar = document.getElementById('sender');
+  const interceptorChar = document.getElementById('interceptor');
+  const receiverChar = document.getElementById('receiver');
+  
+  const imageDisplayArea = document.getElementById('imageDisplayArea');
+  const coverImageEmoji = document.getElementById('coverImageEmoji');
+  const scanAnimation = document.getElementById('scanAnimation');
+
+  const originalMessageContainer = document.getElementById('originalMessageContainer');
+  const revealedMessageContainer = document.getElementById('revealedMessageContainer');
+  const explanationPanel = document.getElementById('explanationPanel');
+  const actionButton = document.getElementById('actionButton');
+
+  const THE_SECRET_MESSAGE = "I MISS U ❤️";
+
+  let currentScene = 0;
+
+  function setActiveCharacter(activeChar) {
+    [senderChar, interceptorChar, receiverChar].forEach(char => char.classList.remove('active'));
+    if (activeChar) activeChar.classList.add('active');
+  }
+
+  // --- Visualization Functions ---
+  function animateHidingMessage() {
+    actionButton.disabled = true;
+    originalMessageContainer.style.display = 'none';
+    coverImageEmoji.classList.remove('processed'); // Reset for animation
+
+    const messageChars = THE_SECRET_MESSAGE.split('');
+    let delay = 0;
+
+    messageChars.forEach((char, index) => {
+      setTimeout(() => {
+        const flyingChar = document.createElement('div');
+        flyingChar.classList.add('flying-char');
+        flyingChar.textContent = char === ' ' ? '␣' : char; // Make space visible
+        document.body.appendChild(flyingChar); // Append to body for absolute positioning relative to viewport
+
+        // Position it near the message area initially
+        const msgRect = originalMessageContainer.getBoundingClientRect();
+        flyingChar.style.left = `${msgRect.left + (index * 20)}px`; // Stagger start
+        flyingChar.style.top = `${msgRect.top}px`;
+        flyingChar.style.opacity = '1';
+
+        // Animate flying to a random spot on the image
+        const imgRect = imageDisplayArea.getBoundingClientRect();
+        const randomX = imgRect.left + Math.random() * (imgRect.width - 20) + 10; // -20, +10 to keep inside a bit
+        const randomY = imgRect.top + Math.random() * (imgRect.height - 20) + 10;
+
+        flyingChar.style.transition = 'transform 1s ease-out, opacity 1s ease-out';
+        flyingChar.style.transform = `translate(${randomX - (msgRect.left + (index*20))}px, ${randomY - msgRect.top}px) scale(0.5)`;
+        flyingChar.style.opacity = '0';
+
+        // Add a sparkle on the image
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('image-sparkle');
+        sparkle.textContent = '✨'; // Sparkle emoji
+        imageDisplayArea.appendChild(sparkle);
+        // Position sparkle relative to imageDisplayArea
+        sparkle.style.left = `${randomX - imgRect.left}px`; 
+        sparkle.style.top = `${randomY - imgRect.top}px`;
+        sparkle.style.opacity = '1';
+        sparkle.style.transform = 'scale(0)';
+        sparkle.style.transition = 'transform 0.5s ease-out, opacity 0.5s ease-out';
+        
+        setTimeout(() => { // Make sparkle appear
+            sparkle.style.transform = 'scale(1)';
+        }, 100); // Slight delay for effect
+
+        setTimeout(() => { // Make sparkle fade
+            sparkle.style.opacity = '0';
+            sparkle.style.transform = 'scale(0.5)';
+        }, 600);
+
+
+        setTimeout(() => { // Clean up
+          flyingChar.remove();
+          sparkle.remove();
+          if (index === messageChars.length - 1) {
+            coverImageEmoji.classList.add('processed');
+            actionButton.disabled = false;
+            actionButton.textContent = "Is it hidden safely?"; // Next step text
+            currentScene++; // Auto-advance after animation
+            loadScene();
+          }
+        }, 1100); // Longer than char flight + sparkle
+      }, delay);
+      delay += 300; // Stagger character animations
+    });
+  }
+
+  function animateRevealingMessage() {
+    actionButton.disabled = true;
+    revealedMessageContainer.innerHTML = 'Found: '; // Clear previous
+    revealedMessageContainer.style.display = 'flex';
+    
+    const messageChars = THE_SECRET_MESSAGE.split('');
+    let delay = 0;
+
+    messageChars.forEach((char, index) => {
+      setTimeout(() => {
+        // Simulate sparkle on image
+        const imgRect = imageDisplayArea.getBoundingClientRect();
+        const randomX = Math.random() * (imgRect.width - 30) + 15;
+        const randomY = Math.random() * (imgRect.height - 30) + 15;
+
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('image-sparkle');
+        sparkle.textContent = '✨';
+        imageDisplayArea.appendChild(sparkle);
+        sparkle.style.left = `${randomX}px`;
+        sparkle.style.top = `${randomY}px`;
+        sparkle.style.opacity = '0';
+        sparkle.style.transform = 'scale(0)';
+        sparkle.style.transition = 'transform 0.3s, opacity 0.3s';
+        
+        setTimeout(() => {
+            sparkle.style.opacity = '1';
+            sparkle.style.transform = 'scale(1.2)';
+        }, 50);
+        setTimeout(() => { // Fade sparkle
+            sparkle.style.opacity = '0';
+            sparkle.style.transform = 'scale(0.5)';
+        }, 400);
+
+
+        // Create revealed character span
+        const charSpan = document.createElement('span');
+        charSpan.classList.add('revealed-char');
+        charSpan.textContent = char;
+        revealedMessageContainer.appendChild(charSpan);
+
+        setTimeout(() => { // Make char visible after sparkle
+          charSpan.classList.add('visible');
+          sparkle.remove(); // Clean up sparkle
+        }, 350); 
+
+        if (index === messageChars.length - 1) {
+          setTimeout(() => {
+            actionButton.disabled = false;
+            actionButton.textContent = "Awesome! Play Again?";
+            currentScene++; // Auto-advance
+            loadScene();
+          }, delay + 800); // Ensure all chars have appeared
+        }
+      }, delay);
+      delay += 500; // Stagger reveal animations
+    });
+  }
+
+
+  const scenes = [
+    { // Scene 0: Introduction
+      setup: () => {
+        setActiveCharacter(senderChar);
+        originalMessageContainer.style.display = 'flex';
+        revealedMessageContainer.style.display = 'none';
+        coverImageEmoji.classList.remove('processed');
+        scanAnimation.style.display = 'none';
+        actionButton.disabled = false;
+        explanationPanel.innerHTML = `You want to send a secret message: "<strong>${THE_SECRET_MESSAGE}</strong>" to your Ex-Friend. But sneaky <strong>Darth Watcher</strong> might be listening!`;
+        actionButton.textContent = "How can I hide it?";
+      }
+    },
+    { // Scene 1: Sender decides to hide
+      setup: () => {
+        setActiveCharacter(senderChar);
+        explanationPanel.innerHTML = `😊 You decide: "I'll hide my message inside this lovely <strong>Sunset Picture 🌅</strong>! Darth Watcher will never know!"`;
+        actionButton.textContent = "Hide the Message!";
+      }
+    },
+    { // Scene 2: Hiding process (visualized)
+      setup: () => {
+        setActiveCharacter(senderChar);
+        explanationPanel.innerHTML = `You're taking each letter of your message... and cleverly weaving it into the tiny color details of different parts of the sunset picture. Like painting tiny secret symbols only your ex-friend will recognize!`;
+        // Animation will trigger and then auto-advance to next logical step
+        animateHidingMessage(); 
+        // Button text for this step is set inside animateHidingMessage on completion
+      }
+    },
+    // Scene 2.5 (implicit after animation in Scene 2 finishes)
+    { 
+      setup: () => {
+        setActiveCharacter(senderChar);
+        explanationPanel.innerHTML = `The message "<strong>${THE_SECRET_MESSAGE}</strong>" is now hidden inside the sunset picture! It looks almost the same, doesn't it?`;
+        // actionButton.textContent = "Is it hidden safely?"; // This text is now set by animateHidingMessage
+      }
+    },
+    { // Scene 3: Darth Watcher Intercepts
+      setup: () => {
+        setActiveCharacter(interceptorChar);
+        scanAnimation.style.display = 'block'; // Show scan
+        explanationPanel.innerHTML = `😈 Darth Watcher snatches the picture! "Aha! A picture! Is there a secret? I'll scan it with my SUPER SCANNER!"`;
+        actionButton.textContent = "Did Darth find it?";
+      }
+    },
+    { // Scene 4: Darth Fails
+      setup: () => {
+        setActiveCharacter(interceptorChar);
+        scanAnimation.style.display = 'none'; // Stop scan
+        explanationPanel.innerHTML = `😈 Darth Watcher growls: "GRRR! My scanner sees nothing but a normal sunset 🌅! I can't read any message! But I'm still watching..." (The secret is hidden too well for him!)`;
+        actionButton.textContent = "Send it to Ex-Friend!";
+      }
+    },
+    { // Scene 5: Receiver Gets It
+      setup: () => {
+        setActiveCharacter(receiverChar);
+        coverImageEmoji.classList.add('processed'); 
+        explanationPanel.innerHTML = `😉 Your Ex-Friend receives the sunset picture. "Oh, how nice! And I know their special trick for hiding messages in pictures like these..."`;
+        actionButton.textContent = "Can they find the secret?";
+      }
+    },
+    { // Scene 6: Receiver Decodes (visualized)
+      setup: () => {
+        setActiveCharacter(receiverChar);
+        originalMessageContainer.style.display = 'none';
+        explanationPanel.innerHTML = `😉 Your Ex-Friend knows exactly where to look! They scan the picture for those special tiny changes you made. Each changed spot reveals a piece of your hidden message!`;
+        animateRevealingMessage();
+        // Button text for this step is set inside animateRevealingMessage on completion
+      }
+    },
+    // Scene 6.5 (implicit after animation in Scene 6 finishes)
+    {
+      setup: () => {
+        setActiveCharacter(receiverChar);
+        explanationPanel.innerHTML = `🎉 Hooray! Your Ex-Friend found the hidden message: "<strong>${THE_SECRET_MESSAGE}</strong>"! Steganography worked!`;
+        // actionButton.textContent = "Awesome! Play Again?"; // This text is now set by animateRevealingMessage
+      }
+    }
+  ];
+
+  function loadScene() {
+    if (currentScene < scenes.length) {
+      scenes[currentScene].setup();
+    } else {
+      currentScene = 0;
+      scenes[currentScene].setup();
+    }
+  }
+
+  actionButton.addEventListener('click', () => {
+    // For animated scenes, the advancement is handled within the animation's completion callback.
+    // This click primarily handles transitions between non-animated or post-animation states.
+    if (scenes[currentScene].setup !== animateHidingMessage && scenes[currentScene].setup !== animateRevealingMessage) {
+      currentScene++;
+      loadScene();
+    }
+  });
+
+  // Initial Load
+  loadScene();
+
+</script>
+</body>
+</html>
