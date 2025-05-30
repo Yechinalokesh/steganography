@@ -1,6 +1,6 @@
 # ✨ Steganography Explained: Hiding Secrets in Plain Sight..
 
-📺 **See Stego in Action (Animated Comic!)** 👉 [**Watch the Story**](https://your-link.com)
+📺 **See Stego in Action (Animated Comic!)** 👉 [**Watch the Story**]( https://yechinalokesh.github.io/steganography/)
 
 Welcome! 👋 This notebook explains **steganography** – how we hide secret information inside everyday files. 🖼️🔐
 
