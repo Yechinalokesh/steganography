@@ -1,0 +1,13 @@
+<h2><strong>What is Steganography?</strong></h2>
+<p>Steganography is the practice of hiding secret information within ordinary files such as images, audio, or video. Unlike cryptography, which hides the content of a message, steganography hides the very existence of the message.</p>
+
+<h3><strong>🔍 Real-World Use Cases:</strong></h3>
+<ul>
+  <li>Watermarking digital content</li>
+  <li>Covert communication</li>
+  <li>Digital rights management (DRM)</li>
+  <li>Forensics and secure messaging</li>
+</ul>
+
+<h3><strong>🧠 Fun Fact:</strong></h3>
+<p>Ancient Greeks used to shave a messenger’s head, write a message on it, and let the hair grow back before sending him. That’s an early example of steganography!</p>
